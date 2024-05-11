@@ -75,3 +75,50 @@ fun Authenticate(username: String, password: String, user: MutableState<User>, c
         }
     })
 }
+
+fun Register (username: String, password: String, email: String, context: Context){
+    val urlRequest = HttpUrl.Builder().scheme("http").host(api_link)
+        .addPathSegment("help_homework")
+        .addPathSegment("register")
+        .addQueryParameter("format", "true")
+        .addQueryParameter("username",username)
+        .addQueryParameter("password",password)
+        .addQueryParameter("email",email)
+        .build()
+
+    val request = Request.Builder().url(urlRequest).build()
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            Log.d("Error", e.toString())
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            response.body?.let {
+                val responseObject = it.string()
+
+                try {
+                    val doc = Jsoup.parse(responseObject)
+                    val jsonObject = JSONObject(doc.select("pre").text())
+
+                    if (jsonObject.has("success")) {
+                        Log.d("Success!", "User Registered")
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "User Registered", Toast.LENGTH_LONG).show()
+                        }
+                    } else if (jsonObject.has("error")) {
+                        val errorMessage = jsonObject.getString("error").toString()
+                        Log.d("Error", errorMessage)
+
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Log.d("Error", "Unknown error")
+                    }
+                } catch (e: Exception) {
+                    Log.d("Error", e.toString())
+                }
+            }
+        }
+    })
+}

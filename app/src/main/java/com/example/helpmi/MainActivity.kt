@@ -70,9 +70,23 @@ fun MainMenuScreen(navController: androidx.navigation.NavController) {
 @Composable
 fun RegisterScreen() {
 AndroidView(factory = { context ->
+
     val view = LayoutInflater.from(context).inflate(R.layout.register_layout, null)
+    val registerButton = view.findViewById<Button>(R.id.registerButton)
+    val usernameEditText = view.findViewById<EditText>(R.id.InputUsername)
+    val passwordEditText = view.findViewById<EditText>(R.id.InputPassword)
+    val emailEditText = view.findViewById<EditText>(R.id.InputEmail)
+
+    registerButton.setOnClickListener(){
+        val username = usernameEditText.text.toString()
+        val password = passwordEditText.text.toString()
+        val email = emailEditText.text.toString()
+        Log.d("Register", "Username: $username, Password: $password, Email: $email")
+        Register(username, password, email, context)
+    }
     view
 })
+
 }
 
 @Composable
