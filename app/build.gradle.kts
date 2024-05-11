@@ -50,7 +50,12 @@ android {
 }
 
 dependencies {
-
+    implementation("org.jsoup:jsoup:1.14.3") // replace with the latest version
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation ("androidx.compose.ui:ui:1.0.5") // replace with the latest version
+    implementation ("androidx.compose.material:material:1.0.5") // replace with the latest version
+    implementation ("androidx.compose.runtime:runtime:1.0.5") // replace with the latest version
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha10")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
