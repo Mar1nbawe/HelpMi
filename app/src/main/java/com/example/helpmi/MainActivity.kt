@@ -81,8 +81,10 @@ fun LoginLayout(navController: NavController, user: MutableState<User>, context:
     AndroidView(factory = { context ->
        val view = LayoutInflater.from(context).inflate(R.layout.login_layout, null)
         val registerButton = view.findViewById<Button>(R.id.registerButton)
+        //can be used to regex the username and password; (TODO ?= undefined)
         val usernameEditText = view.findViewById<EditText>(R.id.InputUsername)
         val passwordEditText = view.findViewById<EditText>(R.id.InputPassword)
+
         registerButton.setOnClickListener(){
             navController.navigate("registerMenu")
         }

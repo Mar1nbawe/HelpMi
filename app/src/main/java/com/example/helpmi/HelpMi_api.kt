@@ -17,6 +17,10 @@ val api_link = "zmeurica.ddns.net"
 val client = OkHttpClient()
 
 fun Authenticate(username: String, password: String, user: MutableState<User>, context: Context){
+
+    // Make sure to add .addPathSegment() for each "/" present in the link
+    // Make sure to add .addQueryParameter() for each possible query present in the link
+    //Always add a .scheme("http"), otherwise you'll get errors
     val urlRequest = HttpUrl.Builder().scheme("http").host(api_link)
         .addPathSegment("help_homework")
         .addPathSegment("login")
@@ -36,6 +40,7 @@ fun Authenticate(username: String, password: String, user: MutableState<User>, c
                 val responseObject = it.string()
 
                 try{
+                    //Jsoup will parse the html response into a document
                     val doc = Jsoup.parse(responseObject)
                     val jsonObject = JSONObject(doc.select("pre").text())
 
@@ -49,6 +54,8 @@ fun Authenticate(username: String, password: String, user: MutableState<User>, c
                     else if (jsonObject.has("error")){
                         val errorMessage = jsonObject.getString("error").toString()
                         Log.d("Error", errorMessage)
+
+                        //State management will handle the error message with Toasts and other visual elements.
                         Handler(Looper.getMainLooper()).post {
                             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         }
