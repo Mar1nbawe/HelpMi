@@ -49,7 +49,7 @@ fun Authenticate(username: String, password: String, user: MutableState<User>, c
                         val id = jsonObject.getJSONObject("data").getInt("id")
                         val username = jsonObject.getJSONObject("data").getString("username")
                         user.value = User(id, username)
-
+                        //TODO add navigation on success
                     }
                     else if (jsonObject.has("error")){
                         val errorMessage = jsonObject.getString("error").toString()
@@ -105,6 +105,7 @@ fun Register (username: String, password: String, email: String, context: Contex
                         Handler(Looper.getMainLooper()).post {
                             Toast.makeText(context, "User Registered", Toast.LENGTH_LONG).show()
                         }
+                    // TODO add navigation on success
                     } else if (jsonObject.has("error")) {
                         val errorMessage = jsonObject.getString("error").toString()
                         Log.d("Error", errorMessage)
