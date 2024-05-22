@@ -25,12 +25,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-
-
+import androidx.recyclerview.widget.RecyclerView
 
 
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val recyclerView = findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+        val adapter = PostAdapter(emptyList())
+        recyclerView.adapter = adapter
+        //TODO: Review code
         super.onCreate(savedInstanceState)
         setContent {
             val user = remember {
@@ -115,3 +120,4 @@ fun LoginLayout(navController: NavController, user: MutableState<User>, context:
     })
     }
 
+//TODO: the Homework lister View

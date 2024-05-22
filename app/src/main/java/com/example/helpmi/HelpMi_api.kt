@@ -123,3 +123,6 @@ fun Register (username: String, password: String, email: String, context: Contex
         }
     })
 }
+
+
+//TODO: Add a function to fetch the posts from the API
