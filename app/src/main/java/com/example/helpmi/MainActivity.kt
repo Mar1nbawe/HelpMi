@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -32,10 +33,9 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val recyclerView = findViewById<RecyclerView>(R.id.homeworkRecyclerView)
-        val adapter = PostAdapter(emptyList())
-        recyclerView.adapter = adapter
-        //TODO: Review code
+        //val recyclerView = findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+      //  val adapter = PostAdapter(emptyList())
+       // recyclerView.adapter = adapter
         super.onCreate(savedInstanceState)
         setContent {
             val user = remember {
@@ -46,11 +46,15 @@ class MainActivity : ComponentActivity() {
             }
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "LoginMenu") {
-                composable("LoginMenu"){LoginLayout(navController, user, this@MainActivity)}
-                composable("registerMenu"){RegisterScreen()}
+            NavHost(navController = navController, startDestination = "MainMenu") {
+                composable("MainMenu") { MainMenuScreen(navController) }
+                composable("LoginMenu"){LoginLayout(navController, user)}
+                composable("registerMenu"){RegisterScreen(navController)}
+
             }
         }
+
+
     }
 }
 
@@ -61,19 +65,21 @@ fun MainMenuScreen(navController: androidx.navigation.NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("login") }) {
+        Button(onClick = { navController.navigate("LoginMenu") }) {
             Text(text = "Login")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("register") }) {
+        Button(onClick = { navController.navigate("registerMenu") }) {
             Text(text = "Register")
         }
     }
 }
 
 
+
+
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
 AndroidView(factory = { context ->
 
     val view = LayoutInflater.from(context).inflate(R.layout.register_layout, null)
@@ -87,7 +93,7 @@ AndroidView(factory = { context ->
         val password = passwordEditText.text.toString()
         val email = emailEditText.text.toString()
         Log.d("Register", "Username: $username, Password: $password, Email: $email")
-        Register(username, password, email, context)
+        HelpMi_api().Register(username, password, email, context, navController)
     }
     view
 })
@@ -95,7 +101,7 @@ AndroidView(factory = { context ->
 }
 
 @Composable
-fun LoginLayout(navController: NavController, user: MutableState<User>, context: Context){
+fun LoginLayout(navController: NavController, user: MutableState<User>){
 
     AndroidView(factory = { context ->
        val view = LayoutInflater.from(context).inflate(R.layout.login_layout, null)
@@ -113,11 +119,13 @@ fun LoginLayout(navController: NavController, user: MutableState<User>, context:
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
             Log.d("Login", "Username: $username, Password: $password")
-           Authenticate(username, password, user, context)
+           HelpMi_api().Authenticate(username, password, user, context, navController)
       //TODO : add login logic
         }
         view
     })
     }
+
+
 
 //TODO: the Homework lister View
