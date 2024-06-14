@@ -181,6 +181,7 @@ class HelpMi_api {
                         }
                         Log.d("Posts", fetchedPosts[1].title)
                         postAdapter.updatePosts(fetchedPosts)
+                        postAdapter.notifyDataSetChanged()
                     } catch (e: Exception) {
                         Log.d("Error", "Parsing error: ${e.message}")
                     }
