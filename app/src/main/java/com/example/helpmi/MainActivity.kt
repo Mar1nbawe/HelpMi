@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +34,6 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //val recyclerView = findViewById<RecyclerView>(R.id.homeworkRecyclerView)
-      //  val adapter = PostAdapter(emptyList())
-       // recyclerView.adapter = adapter
         super.onCreate(savedInstanceState)
         setContent {
             val user = remember {
@@ -51,6 +49,7 @@ class MainActivity : ComponentActivity() {
                 composable("LoginMenu"){LoginLayout(navController, user)}
                 composable("registerMenu"){RegisterScreen(navController)}
                 composable("HomeworkList"){HomeworkList(navController)}
+                composable("HomeworkTopic"){ HomeworkTopic(navController) }
 
             }
         }
@@ -59,8 +58,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
-fun MainMenuScreen(navController: androidx.navigation.NavController) {
+fun MainMenuScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -77,6 +77,19 @@ fun MainMenuScreen(navController: androidx.navigation.NavController) {
 }
 
 @Composable
+fun HomeworkTopic(navController: NavController)
+{
+    AndroidView(factory = { context ->
+        val view = LayoutInflater.from(context).inflate(R.layout.homework_topic, null)
+
+        //TODO : Add logic to display the topic
+        //TODO : Create functions for inserting comments
+        view
+    })
+
+}
+
+@Composable
 fun HomeworkList(navController: NavController)
 {
     AndroidView(factory = { context ->
@@ -85,7 +98,7 @@ fun HomeworkList(navController: NavController)
         val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = PostAdapter(emptyList())
+        val adapter = PostAdapter(navController, emptyList())
         HelpMi_api().fetchPosts(adapter)
         recyclerView.adapter = adapter
 
@@ -118,6 +131,8 @@ AndroidView(factory = { context ->
 
 }
 
+
+
 @Composable
 fun LoginLayout(navController: NavController, user: MutableState<User>){
 
@@ -144,6 +159,3 @@ fun LoginLayout(navController: NavController, user: MutableState<User>){
     })
     }
 
-
-
-//TODO: the Homework lister View
