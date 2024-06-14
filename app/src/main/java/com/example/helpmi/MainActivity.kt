@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                 composable("MainMenu") { MainMenuScreen(navController) }
                 composable("LoginMenu"){LoginLayout(navController, user)}
                 composable("registerMenu"){RegisterScreen(navController)}
+                composable("HomeworkList"){HomeworkList(navController)}
 
             }
         }
@@ -75,6 +76,23 @@ fun MainMenuScreen(navController: androidx.navigation.NavController) {
     }
 }
 
+@Composable
+fun HomeworkList(navController: NavController)
+{
+    AndroidView(factory = { context ->
+        val view = LayoutInflater.from(context).inflate(R.layout.homework_list_menu, null)
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = PostAdapter(emptyList())
+        HelpMi_api().fetchPosts(adapter)
+        recyclerView.adapter = adapter
+
+        view
+    })
+
+}
 
 
 

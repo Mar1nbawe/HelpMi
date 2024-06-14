@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.android.material:material:1.4.0")
     implementation("org.jsoup:jsoup:1.14.3") // replace with the latest version
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
     implementation ("androidx.compose.ui:ui:1.0.5") // replace with the latest version

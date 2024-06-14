@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import okhttp3.*
+import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
@@ -17,7 +18,7 @@ class HelpMi_api {
 
     private val api_link = "zmeurica.ddns.net"
 
-   private val client = OkHttpClient()
+   val client = OkHttpClient()
 
     fun URLBuilder (scheme: String, pathSegments: List<String> = emptyList(), queryParameters: Map<String, String> = emptyMap()) : HttpUrl{
 
@@ -72,7 +73,8 @@ class HelpMi_api {
                             Handler(Looper.getMainLooper()).post {
                                 Toast.makeText(context, "User Authenticated", Toast.LENGTH_LONG)
                                     .show()
-                                navController.navigate("MainMenu")
+                                navController.navigate("HomeworkList")
+
                             }
                         } else if (jsonObject.has("error")) {
                             val errorMessage = jsonObject.getString("error").toString()
@@ -96,6 +98,7 @@ class HelpMi_api {
             }
         })
     }
+
 
     fun Register(
         username: String,
@@ -143,6 +146,43 @@ class HelpMi_api {
                         }
                     } catch (e: Exception) {
                         Log.d("Error", e.toString())
+                    }
+                }
+            }
+        })
+    }
+
+
+    fun fetchPosts(postAdapter: PostAdapter) {
+        val api = URLBuilder("http", listOf("help_homework", "getPosts"), queryParameters = mapOf("format" to "true"))
+
+        val request = Request.Builder().url(api).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("Error", e.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let {
+                    val responseObject = it.string()
+
+                    if (responseObject.isBlank()) {
+                        Log.d("Error", "Empty response from server")
+                        return
+                    }
+
+                    try {
+                        val doc = Jsoup.parse(responseObject)
+                        val jsonArray = JSONArray(doc.select("pre").text())
+
+                        val fetchedPosts : List<Post> = List(jsonArray.length()) { i ->
+                            val post = jsonArray.getJSONObject(i)
+                            Post(post.getInt("id"), post.getString("title"), post.getString("content"), post.getString("username"), post.getString("posted_at"))
+                        }
+                        Log.d("Posts", fetchedPosts[1].title)
+                        postAdapter.updatePosts(fetchedPosts)
+                    } catch (e: Exception) {
+                        Log.d("Error", "Parsing error: ${e.message}")
                     }
                 }
             }
