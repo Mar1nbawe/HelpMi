@@ -1,35 +1,39 @@
 package com.example.helpmi
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import android.widget.Toolbar
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 
-import androidx.compose.material.Text
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -48,9 +52,7 @@ class MainActivity : ComponentActivity() {
             val user = remember {
                 mutableStateOf(User(0, ""))
             }
-            val errorMessage = remember {
-                mutableStateOf<String?>(null)
-            }
+
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "LoginMenu") {
@@ -68,22 +70,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Composable
-fun MainMenuScreen(navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { navController.navigate("LoginMenu") }) {
-            Text(text = "Login")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("registerMenu") }) {
-            Text(text = "Register")
-        }
-    }
-}
+
 
 @Composable
 fun HomeworkTopic(navController: NavController)
@@ -101,7 +88,12 @@ fun HomeworkTopic(navController: NavController)
 @Composable
 fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar: MutableState<Toolbar?>)
 {
+    val context = LocalContext.current
+    handleDoubleBackPress(onDoubleBackPress = {(context as? ComponentActivity)?.finish()} , context)
+
     AndroidView(factory = { context ->
+
+
         val view = LayoutInflater.from(context).inflate(R.layout.homework_list_menu, null)
 
          toolbar.value = view.findViewById(R.id.Toolbar)
@@ -177,4 +169,25 @@ fun LoginLayout(navController: NavController, user: MutableState<User>){
         view
     })
     }
+
+@Composable
+fun handleDoubleBackPress(onDoubleBackPress: () -> Unit, context: Context) {
+    var backPressCount by rememberSaveable { mutableStateOf(0) }
+
+    LaunchedEffect(backPressCount) {
+        if (backPressCount > 0) {
+            delay(2000L)
+            backPressCount = 0
+        }
+    }
+
+    BackHandler {
+        if (backPressCount++ > 0) {
+            onDoubleBackPress()
+        } else {
+            Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
 
