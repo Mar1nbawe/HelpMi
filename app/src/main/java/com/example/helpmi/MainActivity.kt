@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.Toolbar
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,11 +33,18 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class MainActivity : ComponentActivity() {
-
+    var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            toolbar = findViewById(R.id.Toolbar)
+            setActionBar(toolbar)
+
+            val toolbarState = remember {
+                mutableStateOf(toolbar)
+            }
             val user = remember {
                 mutableStateOf(User(0, ""))
             }
@@ -44,12 +53,12 @@ class MainActivity : ComponentActivity() {
             }
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "MainMenu") {
-                composable("MainMenu") { MainMenuScreen(navController) }
-                composable("LoginMenu"){LoginLayout(navController, user)}
-                composable("registerMenu"){RegisterScreen(navController)}
-                composable("HomeworkList"){HomeworkList(navController)}
-                composable("HomeworkTopic"){ HomeworkTopic(navController) }
+            NavHost(navController = navController, startDestination = "LoginMenu") {
+                //  composable("MainMenu") { MainMenuScreen(navController) }
+                composable("LoginMenu") { LoginLayout(navController, user) }
+                composable("registerMenu") { RegisterScreen(navController, user) }
+                composable("HomeworkList") { HomeworkList(navController, user, toolbarState) }
+                composable("HomeworkTopic") { HomeworkTopic(navController) }
 
             }
         }
@@ -90,17 +99,27 @@ fun HomeworkTopic(navController: NavController)
 }
 
 @Composable
-fun HomeworkList(navController: NavController)
+fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar: MutableState<Toolbar?>)
 {
     AndroidView(factory = { context ->
         val view = LayoutInflater.from(context).inflate(R.layout.homework_list_menu, null)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+         toolbar.value = view.findViewById(R.id.Toolbar)
 
+        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+        val logOutButton = view.findViewById<LinearLayout>(R.id.logOutButton)
         recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = PostAdapter(navController, emptyList())
         HelpMi_api().fetchPosts(adapter)
         recyclerView.adapter = adapter
+
+        Log.d("HomeworkList", "User: ${user.value.username}")
+        toolbar.value?.title = "Welcome, ${user.value.username}"
+
+        logOutButton.setOnClickListener(){
+            navController.navigate("LoginMenu")
+            user.value = User(0, "")
+        }
 
         view
     })
@@ -110,7 +129,7 @@ fun HomeworkList(navController: NavController)
 
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController, user: MutableState<User>) {
 AndroidView(factory = { context ->
 
     val view = LayoutInflater.from(context).inflate(R.layout.register_layout, null)
@@ -124,7 +143,7 @@ AndroidView(factory = { context ->
         val password = passwordEditText.text.toString()
         val email = emailEditText.text.toString()
         Log.d("Register", "Username: $username, Password: $password, Email: $email")
-        HelpMi_api().Register(username, password, email, context, navController)
+        HelpMi_api().Register(username, password, email, context, navController, user)
     }
     view
 })

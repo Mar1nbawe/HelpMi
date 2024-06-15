@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
+
+    <TextView
+        android:id="@+id/logo"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:fontFamily="sans-serif-condensed"
+        android:shadowColor="#000"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="2"
+        android:text="HelpMi"
+        android:textColor="@color/purple_700"
+        android:textSize="60sp"
+        android:textStyle="bold|italic" />
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/logo"
+        android:text="Help each other out!"
+        android:textColor="@color/black"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
 
     <EditText
         android:id="@+id/InputUsername"
@@ -15,7 +43,7 @@
         android:inputType="textPersonName"
         android:textSize="24sp"
         android:background="@drawable/edit_text"
-
+        android:fontFamily="sans-serif"
         android:padding="10dp" />
 
     <EditText
@@ -29,6 +57,7 @@
         android:inputType="textPassword"
         android:textSize="24sp"
         android:background="@drawable/edit_text"
+        android:fontFamily="sans-serif"
         android:padding="10dp" />
 
     <Button
@@ -38,7 +67,10 @@
         android:layout_marginTop="20dp"
         android:layout_below="@+id/InputPassword"
         android:text="Login"
+        android:textAllCaps="false"
+        android:textSize="20sp"
         android:textColor="@color/white"
+        android:fontFamily="sans-serif"
         android:background="@drawable/button_background"
         android:padding="10dp" />
 
@@ -58,8 +90,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/noAccountText"
-        android:text="Register"
+        android:textSize="20sp"
+        android:text="Sign up"
+        android:textAllCaps="false"
         android:textColor="@color/white"
+        android:fontFamily="sans-serif"
         android:background="@drawable/button_background"
         android:padding="10dp" />
 

@@ -12,6 +12,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
+import com.example.helpmi.User
 
 
 class HelpMi_api {
@@ -40,7 +41,7 @@ class HelpMi_api {
         password: String,
         user: MutableState<User>,
         context: Context,
-        navController: NavController
+        navController: NavController,
     ) {
 
         // see URLBuilder function
@@ -71,6 +72,7 @@ class HelpMi_api {
                             user.value = User(id, username)
                             //TODO add navigation on success
                             Handler(Looper.getMainLooper()).post {
+
                                 Toast.makeText(context, "User Authenticated", Toast.LENGTH_LONG)
                                     .show()
                                 navController.navigate("HomeworkList")
@@ -105,7 +107,8 @@ class HelpMi_api {
         password: String,
         email: String,
         context: Context,
-        navController: NavController
+        navController: NavController,
+        user: MutableState<User>
     ) {
         // see URLBuilder function
         val pathSegment = listOf("help_homework", "register")
@@ -129,8 +132,13 @@ class HelpMi_api {
 
                         if (jsonObject.has("success")) {
                             Log.d("Success!", "User Registered")
+                            val id = jsonObject.getJSONObject("data").getInt("id")
+                            val username = jsonObject.getJSONObject("data").getString("username")
+                            user.value = User(id, username)
                             Handler(Looper.getMainLooper()).post {
+
                                 Toast.makeText(context, "User Registered", Toast.LENGTH_LONG).show()
+                                navController.navigate("HomeworkMenu")
                             }
                             // TODO add navigation on success
                         } else if (jsonObject.has("error")) {
@@ -139,7 +147,7 @@ class HelpMi_api {
 
                             Handler(Looper.getMainLooper()).post {
                                 Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                                navController.navigate("HomeworkMenu")
+
                             }
                         } else {
                             Log.d("Error", "Unknown error")

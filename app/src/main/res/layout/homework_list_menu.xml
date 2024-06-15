@@ -3,11 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/ToolbarLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.widget.Toolbar
+            android:titleTextAppearance="@style/ToolbarTitle"
+            android:id="@+id/Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/purple_700"
+            android:theme="@style/Theme.Material3.Light"
+            android:minHeight="50dp" />
+
+        <LinearLayout
+            android:id="@+id/logOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            android:minHeight="50dp"
+            android:gravity="center"
+            android:paddingRight="10dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/LogOutButtonImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_logout_24" />
+
+            <TextView
+                android:id="@+id/toolbarButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Log Out"
+                android:textColor="@color/white"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homeworkRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/navigationView" />
+        android:layout_above="@+id/navigationView"
+        android:layout_below="@+id/ToolbarLayout"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="2dp" />
 
     <LinearLayout
         android:id="@+id/navigationView"
@@ -17,31 +67,6 @@
         android:orientation="horizontal"
         android:background="?android:attr/windowBackground">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Add your navigation items here. For example: -->
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Item 1" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Item 2" />
-
-                <!-- Add more items as needed -->
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
 
     </LinearLayout>
 
