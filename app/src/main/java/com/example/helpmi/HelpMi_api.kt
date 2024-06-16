@@ -1,6 +1,7 @@
 package com.example.helpmi
 
 import android.content.Context
+
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -12,7 +13,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
-import com.example.helpmi.User
+
 
 
 class HelpMi_api {
@@ -70,7 +71,14 @@ class HelpMi_api {
                             val id = jsonObject.getJSONObject("data").getInt("id")
                             val username = jsonObject.getJSONObject("data").getString("username")
                             user.value = User(id, username)
-                            //TODO add navigation on success
+
+                            val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putInt("id", id)
+                            editor.putString("username", username)
+                            editor.apply()
+
+
                             Handler(Looper.getMainLooper()).post {
 
                                 Toast.makeText(context, "User Authenticated", Toast.LENGTH_LONG)
@@ -135,6 +143,13 @@ class HelpMi_api {
                             val id = jsonObject.getJSONObject("data").getInt("id")
                             val username = jsonObject.getJSONObject("data").getString("username")
                             user.value = User(id, username)
+
+                            val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putInt("id", id)
+                            editor.putString("username", username)
+                            editor.apply()
+
                             Handler(Looper.getMainLooper()).post {
 
                                 Toast.makeText(context, "User Registered", Toast.LENGTH_LONG).show()
@@ -198,12 +213,12 @@ class HelpMi_api {
         })
     }
 
-    fun addPosts(title: String, content: String, user_id: Int, context: Context, navController: NavController ){
-
+    fun addPosts(title: String, content: String, context: Context, navController: NavController ){
+        val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
         val pathSegment = listOf("help_homework", "addPost")
-        val QueryParams = mapOf("format" to "true", "user_id" to user_id.toString(), "title" to title, "content" to content)
+        val QueryParams = mapOf("format" to "true", "user_id" to sharedPreferences.getInt("id", 0).toString(), "title" to title, "content" to content)
         val urlRequest = URLBuilder("http", pathSegment, QueryParams)
-
+        Log.d("URL", urlRequest.toString())
 
         val request = Request.Builder().url(urlRequest).build()
         client.newCall(request).enqueue(object : Callback {

@@ -9,6 +9,9 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        plugins {
+        //    id("io.realm.kotlin") version "10.8.0"
+        }
     }
 }
 dependencyResolutionManagement {

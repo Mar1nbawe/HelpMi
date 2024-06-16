@@ -56,17 +56,20 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "LoginMenu") {
-                //  composable("MainMenu") { MainMenuScreen(navController) }
+            val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+
+
+            NavHost(navController = navController, startDestination = if (sharedPreferences.getInt("id", 0) != 0) "HomeworkList" else "LoginMenu") {
+
                 composable("LoginMenu") { LoginLayout(navController, user) }
                 composable("registerMenu") { RegisterScreen(navController, user) }
                 composable("HomeworkList") { HomeworkList(navController, user, toolbarState) }
                 composable("HomeworkTopic") { HomeworkTopic(navController) }
-                composable("AddHomeworkScreen") { AddHomeworkScreen(navController, user.value.id) }
+                composable("AddHomeworkScreen") { AddHomeworkScreen(navController) }
             }
+
+
         }
-
-
     }
 }
 
@@ -125,7 +128,7 @@ fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar
 }
 
 @Composable
-fun AddHomeworkScreen(navController: NavController, user_id: Int)
+fun AddHomeworkScreen(navController: NavController)
 {
     AndroidView(factory = { context ->
         val view = LayoutInflater.from(context).inflate(R.layout.add_homework_screen, null)
@@ -137,7 +140,7 @@ fun AddHomeworkScreen(navController: NavController, user_id: Int)
         submitButton.setOnClickListener(){
             val title = titleEditText.text.toString()
             val description = descriptionEditText.text.toString()
-            HelpMi_api().addPosts(title, description, user_id, context, navController)
+            HelpMi_api().addPosts(title, description, context, navController)
 
         }
 
@@ -177,7 +180,7 @@ fun LoginLayout(navController: NavController, user: MutableState<User>){
     AndroidView(factory = { context ->
        val view = LayoutInflater.from(context).inflate(R.layout.login_layout, null)
         val registerButton = view.findViewById<Button>(R.id.registerButton)
-        //can be used to regex the username and password; (TODO ?= undefined)
+
         val usernameEditText = view.findViewById<EditText>(R.id.InputUsername)
         val passwordEditText = view.findViewById<EditText>(R.id.InputPassword)
 
