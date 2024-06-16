@@ -197,6 +197,36 @@ class HelpMi_api {
             }
         })
     }
+
+    fun fetchPostData(postId: Int) {
+        val api = URLBuilder("http", listOf("help_homework", "getPost"), queryParameters = mapOf("format" to "true", "post_id" to postId.toString()))
+
+        val request = Request.Builder().url(api).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("Error", e.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let {
+                    val responseObject = it.string()
+
+                    if (responseObject.isBlank()) {
+                        Log.d("Error", "Empty response from server")
+                        return
+                    }
+
+                    try {
+                        val doc = Jsoup.parse(responseObject)
+                        val jsonObject = JSONObject(doc.select("pre").text())
+                        val postValue = Post(jsonObject.getInt("id"), jsonObject.getString("title"), jsonObject.getString("content"), jsonObject.getString("username"), jsonObject.getString("posted_at"))
+                    } catch (e: Exception) {
+                        Log.d("Error", "Parsing error: ${e.message}")
+                    }
+                }
+            }
+        })
+    }
 }
 
 //TODO: Add a function to fetch the posts from the API

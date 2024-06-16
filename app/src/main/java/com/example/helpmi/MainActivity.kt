@@ -80,6 +80,12 @@ fun HomeworkTopic(navController: NavController)
 
         //TODO : Add logic to display the topic
         //TODO : Create functions for inserting comments
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        HelpMi_api().fetchPostData(1)
+
         view
     })
 
