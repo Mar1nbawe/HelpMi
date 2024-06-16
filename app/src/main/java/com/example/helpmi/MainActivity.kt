@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toolbar
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 composable("registerMenu") { RegisterScreen(navController, user) }
                 composable("HomeworkList") { HomeworkList(navController, user, toolbarState) }
                 composable("HomeworkTopic") { HomeworkTopic(navController) }
-
+                composable("AddHomeworkScreen") { AddHomeworkScreen(navController, user.value.id) }
             }
         }
 
@@ -100,6 +101,7 @@ fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
         val logOutButton = view.findViewById<LinearLayout>(R.id.logOutButton)
+        val addHomeworkButton = view.findViewById<ImageButton>(R.id.addHomeworkButton)
         recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = PostAdapter(navController, emptyList())
         HelpMi_api().fetchPosts(adapter)
@@ -113,9 +115,34 @@ fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar
             user.value = User(0, "")
         }
 
+        addHomeworkButton.setOnClickListener(){
+            navController.navigate("AddHomeworkScreen")
+        }
+
         view
     })
 
+}
+
+@Composable
+fun AddHomeworkScreen(navController: NavController, user_id: Int)
+{
+    AndroidView(factory = { context ->
+        val view = LayoutInflater.from(context).inflate(R.layout.add_homework_screen, null)
+        val titleEditText = view.findViewById<EditText>(R.id.InputTitle)
+        val descriptionEditText = view.findViewById<EditText>(R.id.InputTopic)
+        val submitButton = view.findViewById<Button>(R.id.CreateHomeworkButton)
+
+
+        submitButton.setOnClickListener(){
+            val title = titleEditText.text.toString()
+            val description = descriptionEditText.text.toString()
+            HelpMi_api().addPosts(title, description, user_id, context, navController)
+
+        }
+
+        view
+    })
 }
 
 

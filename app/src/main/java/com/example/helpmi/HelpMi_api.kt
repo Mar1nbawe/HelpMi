@@ -197,6 +197,33 @@ class HelpMi_api {
             }
         })
     }
+
+    fun addPosts(title: String, content: String, user_id: Int, context: Context, navController: NavController ){
+
+        val pathSegment = listOf("help_homework", "addPost")
+        val QueryParams = mapOf("format" to "true", "user_id" to user_id.toString(), "title" to title, "content" to content)
+        val urlRequest = URLBuilder("http", pathSegment, QueryParams)
+
+
+        val request = Request.Builder().url(urlRequest).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("Error", e.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "Homework added", Toast.LENGTH_LONG).show()
+                        navController.navigate("HomeworkList")
+
+                    }
+                } else {
+                    Log.d("Error", "Failed to add post: ${response.code}")
+                }
+            }
+        })
+    }
 }
 
 //TODO: Add a function to fetch the posts from the API
