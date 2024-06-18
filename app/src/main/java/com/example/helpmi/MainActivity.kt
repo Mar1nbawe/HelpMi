@@ -82,8 +82,20 @@ fun HomeworkTopic(navController: NavController)
     AndroidView(factory = { context ->
         val view = LayoutInflater.from(context).inflate(R.layout.homework_topic, null)
 
+
+
         //TODO : Add logic to display the topic
         //TODO : Create functions for inserting comments
+
+//        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
+
+//        recyclerView.layoutManager = LinearLayoutManager(context)
+        HelpMi_api().fetchPostData(1, view)
+        val comments_recyclerView = view.findViewById<RecyclerView>(R.id.post_comments)
+        comments_recyclerView.layoutManager = LinearLayoutManager(context)
+
+//        comments_recyclerView.adapter = adapter
+
         view
     })
 
@@ -126,6 +138,9 @@ fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar
     })
 
 }
+
+
+
 
 @Composable
 fun AddHomeworkScreen(navController: NavController)

@@ -21,6 +21,7 @@ material = "1.12.0"
 runtime = "1.6.8"
 ui = "1.6.8"
 roomCommon = "2.6.1"
+filamentAndroid = "1.17.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,7 @@ realm-gradle-plugin = { module = "io.realm:realm-gradle-plugin", version.ref = "
 realm-gradle-plugin-v1080 = { module = "io.realm:realm-gradle-plugin", version.ref = "realmRealmGradlePlugin" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+filament-android = { group = "com.google.ar.sceneform", name = "filament-android", version.ref = "filamentAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
