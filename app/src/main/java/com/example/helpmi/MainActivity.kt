@@ -2,6 +2,7 @@ package com.example.helpmi
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -62,9 +63,9 @@ class MainActivity : ComponentActivity() {
             NavHost(navController = navController, startDestination = if (sharedPreferences.getInt("id", 0) != 0) "HomeworkList" else "LoginMenu") {
                 composable("LoginMenu") { LoginLayout(navController, user) }
                 composable("registerMenu") { RegisterScreen(navController, user) }
-                composable("HomeworkList") { HomeworkList(navController, user, toolbarState) }
+                composable("HomeworkList") { HomeworkList(navController, user, toolbarState, sharedPreferences) }
                 composable("HomeworkTopic/{postId}") { backStackEntry ->
-                    HomeworkTopic(navController, backStackEntry.arguments?.getString("postId"))
+                    HomeworkTopic(navController, backStackEntry.arguments?.getString("postId"), sharedPreferences.getInt("id", 0).toString())
                 }
                 composable("AddHomeworkScreen") { AddHomeworkScreen(navController) }
             }
@@ -78,7 +79,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HomeworkTopic(navController: NavController, postId: String?)
+fun HomeworkTopic(navController: NavController, postId: String?, userId: String?)
 {
     AndroidView(factory = { context ->
         val view = LayoutInflater.from(context).inflate(R.layout.homework_topic, null)
@@ -97,13 +98,21 @@ fun HomeworkTopic(navController: NavController, postId: String?)
         HelpMi_api().fetchPostData(postId, view, adapter)
         comments_recyclerView.adapter = adapter
 
+        val addCommentButton = view.findViewById<Button>(R.id.AddCommentButton)
+        val inputComment = view.findViewById<EditText>(R.id.InputComment)
+
+        addCommentButton.setOnClickListener {
+            val comment = inputComment.text.toString()
+            HelpMi_api().postComment(comment, postId, userId, view, adapter)
+        }
+
         view
     })
 
 }
 
 @Composable
-fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar: MutableState<Toolbar?>)
+fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar: MutableState<Toolbar?>, sharedPreferences: SharedPreferences)
 {
     val context = LocalContext.current
     handleDoubleBackPress(onDoubleBackPress = {(context as? ComponentActivity)?.finish()} , context)
@@ -124,7 +133,7 @@ fun HomeworkList(navController: NavController, user: MutableState<User>, toolbar
         recyclerView.adapter = adapter
 
         Log.d("HomeworkList", "User: ${user.value.username}")
-        toolbar.value?.title = "Welcome, ${user.value.username}"
+        toolbar.value?.title = "Welcome, ${sharedPreferences.getString("username", "User")}"
 
         logOutButton.setOnClickListener(){
             navController.navigate("LoginMenu")

@@ -215,6 +215,25 @@ class HelpMi_api {
         })
     }
 
+    fun postComment(comment: String, postId: String?, userId: String?, view: View, adapter: CommentAdapter) {
+        val api = URLBuilder("http", listOf("help_homework", "addComment"), queryParameters = mapOf("post_id" to postId.toString(), "user_id" to userId.toString(), "content" to comment))
+
+        val request = Request.Builder().url(api).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    throw IOException("Unexpected code $response")
+                }
+            }
+        })
+
+    }
+
     fun addPosts(title: String, content: String, context: Context, navController: NavController ){
         val sharedPreferences = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
         val pathSegment = listOf("help_homework", "addPost")
