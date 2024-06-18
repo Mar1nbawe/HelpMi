@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
@@ -241,7 +242,7 @@ class HelpMi_api {
         })
     }
 
-    fun fetchPostData(postId: Int, view: android.view.View) {
+    fun fetchPostData(postId: String?, view: View) {
         val api = URLBuilder("http", listOf("help_homework", "getPost"), queryParameters = mapOf("format" to "true", "post_id" to postId.toString()))
 
         val request = Request.Builder().url(api).build()

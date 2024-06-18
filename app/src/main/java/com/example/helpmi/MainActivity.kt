@@ -60,11 +60,12 @@ class MainActivity : ComponentActivity() {
 
 
             NavHost(navController = navController, startDestination = if (sharedPreferences.getInt("id", 0) != 0) "HomeworkList" else "LoginMenu") {
-
                 composable("LoginMenu") { LoginLayout(navController, user) }
                 composable("registerMenu") { RegisterScreen(navController, user) }
                 composable("HomeworkList") { HomeworkList(navController, user, toolbarState) }
-                composable("HomeworkTopic") { HomeworkTopic(navController) }
+                composable("HomeworkTopic/{postId}") { backStackEntry ->
+                    HomeworkTopic(navController, backStackEntry.arguments?.getString("postId"))
+                }
                 composable("AddHomeworkScreen") { AddHomeworkScreen(navController) }
             }
 
@@ -77,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HomeworkTopic(navController: NavController)
+fun HomeworkTopic(navController: NavController, postId: String?)
 {
     AndroidView(factory = { context ->
         val view = LayoutInflater.from(context).inflate(R.layout.homework_topic, null)
@@ -90,7 +91,7 @@ fun HomeworkTopic(navController: NavController)
 //        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
 
 //        recyclerView.layoutManager = LinearLayoutManager(context)
-        HelpMi_api().fetchPostData(1, view)
+        HelpMi_api().fetchPostData(postId, view)
         val comments_recyclerView = view.findViewById<RecyclerView>(R.id.post_comments)
         comments_recyclerView.layoutManager = LinearLayoutManager(context)
 
