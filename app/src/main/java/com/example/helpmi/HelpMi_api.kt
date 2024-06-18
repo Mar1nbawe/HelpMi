@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
@@ -12,7 +14,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
-import com.example.helpmi.User
 
 
 class HelpMi_api {
@@ -198,7 +199,7 @@ class HelpMi_api {
         })
     }
 
-    fun fetchPostData(postId: Int) {
+    fun fetchPostData(postId: Int, view: View) {
         val api = URLBuilder("http", listOf("help_homework", "getPost"), queryParameters = mapOf("format" to "true", "post_id" to postId.toString()))
 
         val request = Request.Builder().url(api).build()
@@ -220,6 +221,10 @@ class HelpMi_api {
                         val doc = Jsoup.parse(responseObject)
                         val jsonObject = JSONObject(doc.select("pre").text())
                         val postValue = Post(jsonObject.getInt("id"), jsonObject.getString("title"), jsonObject.getString("content"), jsonObject.getString("username"), jsonObject.getString("posted_at"))
+                        val title = view.findViewById<TextView>(R.id.post_title)
+                        title.text = postValue.title
+                        val content = view.findViewById<TextView>(R.id.post_content)
+                        content.text = postValue.content
                     } catch (e: Exception) {
                         Log.d("Error", "Parsing error: ${e.message}")
                     }
