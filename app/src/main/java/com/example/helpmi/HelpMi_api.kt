@@ -242,7 +242,7 @@ class HelpMi_api {
         })
     }
 
-    fun fetchPostData(postId: String?, view: View) {
+    fun fetchPostData(postId: String?, view: View, adapter: CommentAdapter) {
         val api = URLBuilder("http", listOf("help_homework", "getPost"), queryParameters = mapOf("format" to "true", "post_id" to postId.toString()))
 
         val request = Request.Builder().url(api).build()
@@ -268,6 +268,19 @@ class HelpMi_api {
                         title.text = postValue.title
                         val content = view.findViewById<TextView>(R.id.post_content)
                         content.text = postValue.content
+                        val jsonArray = jsonObject.getJSONArray("comments")
+                        val fetchedPosts : List<Comment> = List(jsonArray.length()) { i ->
+                            val post = jsonArray.getJSONObject(i)
+                            Comment(
+                                post.getString("username"),
+                                post.getString("content"),
+                                post.getString("posted_at")
+                            )
+                        }
+                        Handler(Looper.getMainLooper()).post {
+                            adapter.updateComments(fetchedPosts)
+                            adapter.notifyDataSetChanged()
+                        }
                     } catch (e: Exception) {
                         Log.d("Error", "Parsing error: ${e.message}")
                     }

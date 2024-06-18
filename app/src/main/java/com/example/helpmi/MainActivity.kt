@@ -91,11 +91,11 @@ fun HomeworkTopic(navController: NavController, postId: String?)
 //        val recyclerView = view.findViewById<RecyclerView>(R.id.homeworkRecyclerView)
 
 //        recyclerView.layoutManager = LinearLayoutManager(context)
-        HelpMi_api().fetchPostData(postId, view)
         val comments_recyclerView = view.findViewById<RecyclerView>(R.id.post_comments)
         comments_recyclerView.layoutManager = LinearLayoutManager(context)
-
-//        comments_recyclerView.adapter = adapter
+        val adapter = CommentAdapter(navController, emptyList())
+        HelpMi_api().fetchPostData(postId, view, adapter)
+        comments_recyclerView.adapter = adapter
 
         view
     })
