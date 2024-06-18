@@ -229,6 +229,14 @@ class HelpMi_api {
                 if (!response.isSuccessful) {
                     throw IOException("Unexpected code $response")
                 }
+                else if(response.isSuccessful){
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(view.context, "Comment added", Toast.LENGTH_LONG).show()
+
+                    }
+
+                    fetchPostData(postId, view, adapter)
+                }
             }
         })
 
